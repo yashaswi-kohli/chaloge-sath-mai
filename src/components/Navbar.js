@@ -1,23 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import UserDropdown from './Dropdown/UserDropdown';
 import bla from '../Images/blablacar_logo_small-83b62417b8605e424242.svg';
-import UserDropdown from './UserDropdown';
-import PublishRide from './users/publish-ride'; // Corrected import statement
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  const handleLogout = () => {
-    // Perform logout logic here (e.g., clear auth tokens, make API call)
-    // After logout, redirect to the home page
-    navigate('/');
-  };
-
-  // Define raw user data (placeholder)
-  const userData = {
-    firstName: 'Harsh', // Example first name
-    lastName: 'Doe', // Example last name
-    // Add more user data properties as needed
+  const handleDropdownToggle = () => {
+    setDropdownOpen(!dropdownOpen);
   };
 
   return (
@@ -27,34 +18,35 @@ const Navbar = () => {
           src={bla}
           alt="Logo"
           className="h-10 cursor-pointer"
-          onClick={() => navigate('/')}
+          onClick={() => navigate('/home')}
         />
       </div>
       <div className="flex items-center space-x-4">
-        <input
-          type="text"
-          placeholder="Search"
-          className="px-4 py-2 border rounded-full"
-        />
-        <button className="px-4 py-2 bg-blue-500 text-white rounded-full" onClick={() => navigate('/publishride')}>
-          Publish Ride
-        </button>
-        <UserDropdown
-          userData={userData}
-          handleLogout={handleLogout}
-        />
-        <button
-          className="px-4 py-2 bg-blue-500 text-white rounded-full"
-          onClick={() => navigate('/login')}
-        >
-          Login
-        </button>
-        <button
-          className="px-4 py-2 bg-blue-500 text-white rounded-full"
-          onClick={() => navigate('/signup')}
-        >
-          SignUp
-        </button>
+          <input
+            type="text"
+            placeholder="Search"
+            className="px-4 py-2 border rounded-full"
+          />
+          <button className="px-4 py-2 bg-blue-500 text-white rounded-full" onClick={() => navigate('/publishride')}>
+            Publish Ride
+          </button>
+          <div>
+            <button class="_57x2jp2" aria-label="Connect" aria-controls="connect-menu" aria-expanded="false" type="button">
+              <div class="_1qgcerq0"><img class="_1qgcerq7" src="https://cdn.blablacar.com/kairos/assets/images/signin-640a2bdb09c085fd1d8e.svg" alt="" data-testid="single-logo" onClick={handleDropdownToggle}/>
+              </div>
+
+              {dropdownOpen ? 
+                (
+                  <UserDropdown />
+                ) : (
+                  <div>
+                    <div></div>
+                  </div>
+                )
+              }
+
+            </button>
+          </div>
       </div>
     </nav>
   );

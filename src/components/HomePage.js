@@ -1,189 +1,124 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import toast from 'react-hot-toast';
+import money from '../Images/money.svg';
+import third from '../Images/third.svg';
+import second from '../Images/second.svg';
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const HomePage = () => {
-  const [from, setFrom] = useState({ city: '', state: '' });
-  const [to, setTo] = useState({ city: '', state: '' });
-  const [departureTime, setDepartureTime] = useState('');
-  const [reachingTime, setReachingTime] = useState('');
-  const [seats, setSeats] = useState('');
-  const [car, setCar] = useState('');
-  const [price, setPrice] = useState('');
-  const [instantBooking, setInstantBooking] = useState(false);
-  const [message, setMessage] = useState('');
+const HomeSection = () => {
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post('/api/trips', {
-        from: `${from.city}, ${from.state}`,
-        to: `${to.city}, ${to.state}`,
-        departureTime,
-        reachingTime,
-        seats,
-        car,
-        price,
-        instantBooking,
-      });
-      setMessage(response.data.message);
-    } catch (error) {
-      setMessage(error.response?.data?.message || 'Error creating trip');
+  const navigate = useNavigate();
+  const [to, setTo] = useState('');
+  const [from, setFrom] = useState('');
+  const [seats, setSeats] = useState(1);
+  const [date, setDate] = useState(new Date());
+  const [loading, setLoading] = useState(false);
+  const [currentUser, setCurrentUser] = useState('');
+
+  useEffect(() => {
+    const storedValue = localStorage.getItem('token');
+    setCurrentUser(storedValue ? storedValue : '');
+    }, []);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+
+    if(currentUser.length > 0) {
+      // toast.error("Login First");
+      navigate('/login');
     }
-  };
+  
+      if (!from && !to && !date && !seats) 
+          toast.error('Please enter all the details');
+      else {
+        try {
+          // const result = await login(email, phoneNumber, password);
+          // localforage.setItem('userId', result._id);
+          // localforage.setItem('email', result.email);
+          // localforage.setItem('number', result.number);
+          // localforage.setItem('token', result.accessToken);
+          // navigate('/');
+        } 
+        catch (error) {
+          console.error('Error during signin:', error.response?.data?.message || error.message);
+              toast.error(error.response?.data?.message || error.message);
+        }
+        finally {
+          setLoading(false);
+        }
+      }
+    };
+
 
   return (
-    <div className="flex flex-col min-h-screen bg-gray-100">
-      <div className="flex-grow flex items-center justify-center">
-        <div className="max-w-md w-full bg-white p-8 rounded shadow-md">
-          <h2 className="text-2xl font-bold mb-6">Create a Trip</h2>
-          {message && <p className="text-green-500 mb-4">{message}</p>}
-          <form onSubmit={handleSubmit}>
-            <div className="mb-4">
-              <label className="block text-gray-700 mb-2" htmlFor="from">From</label>
-              <input
-                type="text"
-                id="from"
-                className="w-full px-3 py-2 border rounded"
-                value={from.city}
-                onChange={(e) => setFrom({ ...from, city: e.target.value })}
-                placeholder="City"
-              />
-              <input
-                type="text"
-                id="fromState"
-                className="w-full px-3 py-2 border rounded mt-2"
-                value={from.state}
-                onChange={(e) => setFrom({ ...from, state: e.target.value })}
-                placeholder="State"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 mb-2" htmlFor="to">To</label>
-              <input
-                type="text"
-                id="to"
-                className="w-full px-3 py-2 border rounded"
-                value={to.city}
-                onChange={(e) => setTo({ ...to, city: e.target.value })}
-                placeholder="City"
-              />
-              <input
-                type="text"
-                id="toState"
-                className="w-full px-3 py-2 border rounded mt-2"
-                value={to.state}
-                onChange={(e) => setTo({ ...to, state: e.target.value })}
-                placeholder="State"
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 mb-2" htmlFor="departureTime">Departure Time</label>
-              <input
-                type="datetime-local"
-                id="departureTime"
-                className="w-full px-3 py-2 border rounded"
-                value={departureTime}
-                onChange={(e) => setDepartureTime(e.target.value)}
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 mb-2" htmlFor="reachingTime">Reaching Time</label>
-              <input
-                type="datetime-local"
-                id="reachingTime"
-                className="w-full px-3 py-2 border rounded"
-                value={reachingTime}
-                onChange={(e) => setReachingTime(e.target.value)}
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 mb-2" htmlFor="seats">Seats</label>
-              <input
-                type="number"
-                id="seats"
-                className="w-full px-3 py-2 border rounded"
-                value={seats}
-                onChange={(e) => setSeats(e.target.value)}
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 mb-2" htmlFor="car">Car</label>
-              <input
-                type="text"
-                id="car"
-                className="w-full px-3 py-2 border rounded"
-                value={car}
-                onChange={(e) => setCar(e.target.value)}
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 mb-2" htmlFor="price">Price</label>
-              <input
-                type="number"
-                id="price"
-                className="w-full px-3 py-2 border rounded"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 mb-2" htmlFor="instantBooking">Instant Booking</label>
-              <input
-                type="checkbox"
-                id="instantBooking"
-                className="mr-2 leading-tight"
-                checked={instantBooking}
-                onChange={(e) => setInstantBooking(e.target.checked)}
-              />
-              <span className="text-gray-700">Enable instant booking</span>
-            </div>
-            <button
-              type="submit"
-              className="w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
-            >
-              Create Trip
-            </button>
-          </form>
+    <div className="bg-indigo-400 text-white">
+      <div className="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8 text-center">
+        <h1 className="text-4xl font-extrabold tracking-tight sm:text-5xl md:text-6xl">
+          Your pick of rides at low prices
+        </h1>
+      </div>
+      <div className="bg-white shadow rounded-lg max-w-4xl mx-auto p-4 mt-6 flex justify-between items-center space-x-4">
+        <input
+          type="text"
+          placeholder="Leaving from"
+          onChange={(e) => setFrom(e.target.value)}
+          className="w-1/4 p-2 border border-gray-300 rounded-md text-black"
+        />
+        <input
+          type="text"
+          placeholder="Going to"
+          onChange={(e) => setTo(e.target.value)}
+          className="w-1/4 p-2 border border-gray-300 rounded-md text-black"
+        />
+        <input
+          type="date"
+          onChange={(e) => setDate(e.target.value)}
+          defaultValue={new Date().toISOString().split('T')[0]}
+          className="w-1/4 p-2 border border-gray-300 rounded-md text-black"
+        />
+        <input
+          type="text"
+          placeholder="1 passenger"
+          onChange={(e) => setSeats(e.target.value)}
+          className="w-1/4 p-2 border border-gray-300 rounded-md text-black"
+        />
+        <button
+          onClick={handleSubmit}
+          className="bg-blue-500 text-white px-4 py-2 rounded-md"
+        >
+		  	  {loading ? 'Searching...' : 'Search'}
+        </button>
+      </div>
+      <div className="max-w-4xl mx-auto mt-10 grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+        <div>
+          <img 
+            src={money} 
+            alt="money icon"
+            className="ml-4 mr-auto mb-4 w-12 h-12"
+          />
+          <h3 className="text-lg font-medium text-black">Your pick of rides at low prices</h3>
+          <p className="mt-2 text-white-600">
+            No matter where you’re going, by bus or carpool, find the perfect ride from our wide range of destinations and routes at low prices.
+          </p>
+        </div>
+        <div>
+          <img src={second} alt="Icon 2" className="ml-10 mr-auto mb-4 w-12 h-12" />
+          <h3 className="text-lg font-medium text-black">Trust who you travel with</h3>
+          <p className="mt-2 text-white-600">
+            We take the time to get to know each of our members and bus partners. We check reviews, profiles, and IDs, so you know who you’re travelling with and can book your ride at ease on our secure platform.
+          </p>
+        </div>
+        <div>
+          <img src={third} alt="Icon 3" className="ml-7 mr-auto mb-4 w-12 h-12" />
+          <h3 className="text-lg font-medium text-black">Scroll, click, tap and go!</h3>
+          <p className="mt-2 text-white-600">
+            Booking a ride has never been easier! Thanks to our simple app powered by great technology, you can book a ride close to you in just minutes.
+          </p>
         </div>
       </div>
-      <footer className="bg-white py-6 shadow-md">
-        <div className="max-w-screen-xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div>
-            <h3 className="text-xl font-semibold mb-4">Top carpool routes</h3>
-            <ul>
-              <li>Delhi → Chandigarh</li>
-              <li>Mumbai → Pune</li>
-              <li>Kanpur → Lucknow</li>
-              <li>Bengaluru → Chennai</li>
-              <li>Pune → Mumbai</li>
-            </ul>
-            <ul className="mt-4">
-              <li className="text-blue-500">All carpool routes</li>
-              <li className="text-blue-500">All carpool destinations</li>
-            </ul>
-          </div>
-          <div>
-          <h3 className="text-xl font-semibold mb-4">About</h3>
-            <ul>
-              <li>How It Works</li>
-              <li>About Us</li>
-              <li>Help Centre</li>
-              <li>Press</li>
-              <li>We're Hiring!</li>
-            </ul>
-          </div>
-          <div>
-            <h3 className="text-xl font-semibold mb-4">Language</h3>
-            <ul>
-              <li>English (India)</li>
-              <li className="text-blue-500">Language</li>
-            </ul>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 };
 
-export default HomePage;
-
+export default HomeSection;
