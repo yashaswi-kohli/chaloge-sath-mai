@@ -1,13 +1,10 @@
-import { logout } from "../../services/api";
+import { logout } from "../../services/user.api";
 
 const LoggedInDropDown = ({navigate}) => {
 
-
     const handleLogout = async () => {
         const token = localStorage.getItem("token");
-		console.log(token);
 		const data = await logout(token);
-        console.log(data);
 		if (!data.error) {
 			localStorage.clear();
 			navigate("/login");

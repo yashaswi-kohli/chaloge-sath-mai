@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { registerUser } from '../../services/auth';
+import { registerUser } from '../../services/user.api';
 import { useNavigate } from 'react-router-dom';
-import LoginSkeleton from '../../pages/LoginSkeleton';
+import LoginSkeleton from '../../pages/skeleton/LoginSkeleton';
 import GetImagePreview from '../../pages/GetImagePreview';
 import Input from '../../pages/Input';
 import toast from 'react-hot-toast';

@@ -1,5 +1,4 @@
-import toast from 'react-hot-toast';
-import { login } from '../../services/auth';
+import { login } from '../../services/user.api';
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
@@ -31,27 +30,18 @@ const LoginPage = () => {
 
 		if (!email && !phoneNumber) setError('Please enter either an email or phone number');
 		else {
-			try {
-				const {userId, newEmail, token, takenNumber} = await login(email, phoneNumber, password);
+			const {userId, newEmail, token, rToken, takenNumber} = await login(email, phoneNumber, password);
 
-				localStorage.setItem("token", token);
-				localStorage.setItem("userId", userId);
-				localStorage.setItem("email", newEmail);
-				localStorage.setItem("number", takenNumber);
+			localStorage.setItem("token", token);
+			localStorage.setItem("rToken", rToken);
+			localStorage.setItem("userId", userId);
+			localStorage.setItem("email", newEmail);
+			localStorage.setItem("number", takenNumber);
 
-				navigate('/home');
-			} 
-			catch (error) {
-				console.error('Error during login:', error.response?.data?.message || error.message);
-      			toast.error(error.response?.data?.message || error.message);
-			}
-			finally {
-				setLoading(false);
-			}
+			setLoading(false);
+			navigate('/home');
 		}
-	};
-
-  
+	}
 
   return currentUser.length > 0 ? ( homeNavigate() ) : (
     <div className="flex justify-center items-center h-screen">
